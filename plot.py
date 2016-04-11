@@ -7,7 +7,7 @@
 #           Shivin Srivastava
 
 import matplotlib.pyplot as plt
-
+from  train import calculateC
 
 def plot():
 
@@ -31,13 +31,11 @@ def plot():
     print data[1:]
     print len_graph
 
-    from time import sleep
-
-    sleep(3)
 
     plt.plot(data)
     plt.show()
 
+    print "Here is the complexity measure: " + str(calculateDistance(data))
 
 if __name__ == '__main__':
     plot()
