@@ -1,6 +1,8 @@
 from numpy import *
 import multiprocessing
 
+from train import CID
+
 """
 Code for hierarchical clustering, modified from
 Programming Collective Intelligence by Toby Segaran
@@ -30,7 +32,7 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
-def hcluster(features, distance=L2dist):
+def hcluster(features, distance=CID):
     # cluster the rows of the "features" matrix
     distances = {}
     currentclustid = -1
@@ -67,7 +69,7 @@ def hcluster(features, distance=L2dist):
                                   distance=closest, id=currentclustid)
 
         # cluster ids that weren't in the original set are negative
-        currentclustid - = 1
+        currentclustid -= 1
         del clust[lowestpair[1]]
         del clust[lowestpair[0]]
         clust.append(newcluster)
@@ -85,9 +87,9 @@ def extract_clusters(clust, dist):
         # check the right and left branches
         cl = []
         cr = []
-        if clust.left! = None:
+        if clust.left != None:
             cl = extract_clusters(clust.left, dist=dist)
-        if clust.right! = None:
+        if clust.right != None:
             cr = extract_clusters(clust.right, dist=dist)
         return cl + cr
 
@@ -101,9 +103,9 @@ def get_cluster_elements(clust):
         # check the right and left branches
         cl = []
         cr = []
-        if clust.left! = None:
+        if clust.left != None:
             cl = get_cluster_elements(clust.left)
-        if clust.right! = None:
+        if clust.right != None:
             cr = get_cluster_elements(clust.right)
         return cl + cr
 
@@ -117,21 +119,21 @@ def printclust(clust, labels=None, n=0):
         print '-'
     else:
         # positive id means that this is an endpoint
-        if labels = = None:
+        if labels == None:
             print clust.id
         else:
             print labels[clust.id]
 
     # now print the right and left branches
-    if clust.left! = None:
+    if clust.left != None:
         printclust(clust.left, labels=labels, n=n + 1)
-    if clust.right! = None:
+    if clust.right != None:
         printclust(clust.right, labels=labels, n=n + 1)
 
 
 def getheight(clust):
     # Is this an endpoint? Then the height is just 1
-    if clust.left = = None and clust.right = = None:
+    if clust.left == None and clust.right == None:
         return 1
 
     # Otherwise the height is the same of the heights of
@@ -141,7 +143,7 @@ def getheight(clust):
 
 def getdepth(clust):
     # The distance of an endpoint is 0.0
-    if clust.left = = None and clust.right = = None:
+    if clust.left == None and clust.right == None:
         return 0
 
     # The distance of a branch is the greater of its two sides
