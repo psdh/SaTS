@@ -6,6 +6,8 @@ import math
 # series is a matrix of series
 # TODO<shivin> parallelize this to use multiple cores
 
+global n
+n = 501
 
 def calculateC(series):
     """
@@ -25,34 +27,60 @@ def calculateC(series):
 
 
 # TODO<shivin> parallelize this to use multiple cores
-def calculateED(s0, s1):
+def calculateED(s):
     """
         Calculates euclidean distance between two series
     """
-    return np.sqrt(np.sum((s1 - s0)**2))
+    return np.sqrt(np.sum((s[1] - s[0])**2))
 
+def calcCF(series):
+    distances = parmap.map(calculateC, series)
+
+    print "len of distances: " + str(len(distances))
+
+    return distances
 
 def calc(series):
     len1 = len(series)
     ser = []
     for i in range(len1):
-        for j in range(i, len1):
+        for j in range(i+1, len1):
             ser.append([series[i], series[j]])
 
-    parmap.map(calculateED, ser)
+    distances = parmap.map(calculateED, ser)
 
+    print "len of distances: " + str(len(distances))
 
-def CF(Q, C):
-    CEQ = calculateC(Q)
-    CEC = calculateC(C)
+    return distances
+
+def CF(Q, C, cf):
+    CEQ = cf[Q-1]
+    CEC = cf[C-1]
 
     try:
         return float(max(CEQ, CEC)) / min(CEQ, CEC)
     except:
         return 1
 
-def CID(Q, C):
-    return calculateED(Q, C) * CF(Q, C)
+
+def sum_ser(n):
+    return (1.0 * n * (n+1))/2.0
+
+
+def CID(Q, C, ed, cf):
+    Q = abs(Q)
+    C = abs(C)
+    mi = min(Q, C)
+    ma = max(Q, C)
+
+
+    print
+    print mi
+    print ma
+    ed_Q_C = ed[int(sum_ser(n-1) - sum_ser(n-1-mi) - 1 + (ma - mi - 1))]
+
+    print ed_Q_C
+    return ed_Q_C * CF(Q, C, cf)
 
 
 def main():
@@ -63,6 +91,7 @@ def main():
 
     data = data.split('\n')
 
+    print len(data)
     features = np.zeros(shape=(len(data), 128))
 
     for i, x in enumerate(data):
@@ -70,10 +99,18 @@ def main():
             continue
         features[i] = (x.split(','))[1:]
 
+    distancesED = calc(features)
+
+    CFdistances = calcCF(features)
+
+    CID(500, 501, distancesED, CFdistances)
+
+    print CFdistances
+
     print "Now clustering"
 
     from hcluster import hcluster
-    hcluster(features)
+    hcluster(features, distancesED, CFdistances)
 
 if __name__ == '__main__':
     main()

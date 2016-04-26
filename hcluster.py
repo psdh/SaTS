@@ -32,7 +32,7 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
-def hcluster(features, distance=CID):
+def hcluster(features, ed, cf, distance=CID):
     # cluster the rows of the "features" matrix
     distances = {}
     currentclustid = -1
@@ -43,7 +43,7 @@ def hcluster(features, distance=CID):
 
     while len(clust) > 1:
         lowestpair = (0, 1)
-        closest = distance(clust[0].vec, clust[1].vec)
+        closest = distance(clust[0].id, clust[1].id, ed, cf)
 
         # loop through every pair looking for the smallest distance
         for i in range(len(clust)):
@@ -51,7 +51,7 @@ def hcluster(features, distance=CID):
                 # distances is the cache of distance calculations
                 if (clust[i].id, clust[j].id) not in distances:
                     distances[(clust[i].id, clust[j].id)] = distance(
-                        clust[i].vec, clust[j].vec)
+                        clust[i].id, clust[j].id, ed, cf)
 
                 d = distances[(clust[i].id, clust[j].id)]
 
