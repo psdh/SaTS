@@ -35,10 +35,10 @@ def calc(series):
     len1 = len(series)
     ser = []
     for i in range(len1):
-        for j in range(i, len1):
+        for j in range(i + 1, len1):
             ser.append([series[i], series[j]])
-
-    parmap.map(calculateED, ser)
+    res = parmap.map(calculateED, ser, processes=50)
+    return np.array(res)
 
 
 def CF(Q, C):

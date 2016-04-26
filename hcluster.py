@@ -1,5 +1,6 @@
 from numpy import *
-import multiprocessing
+from multiprocessing import Pool
+import parmap
 
 """
 Code for hierarchical clustering, modified from
@@ -30,22 +31,24 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
-def hcluster(features, distance=L2dist):
-    # cluster the rows of the "features" matrix
-    distances = {}
-    currentclustid = -1
+distances = {}
 
-    # clusters are initially just the individual rows
-    clust = [cluster_node(array(features[i]), id=i)
-             for i in range(len(features))]
-
-    while len(clust) > 1:
-        lowestpair = (0, 1)
-        closest = distance(clust[0].vec, clust[1].vec)
-
-        # loop through every pair looking for the smallest distance
-        for i in range(len(clust)):
-            for j in range(i + 1, len(clust)):
+def findMin(paras):
+    # initialize the variables
+    clust = paras[0]
+    x1 = paras[1]
+    y1 = paras[2]
+    x2 = paras[3]
+    y2 = paras[4]
+    flag = paras[5]
+    distance = paras[6]
+    global distances
+    #print (x1, x2, y1, y2)
+    closest = distance(clust[x1].vec, clust[y1 + 1].vec)
+    lowestpair = (x1, y1)
+    if flag == 0:
+        for i in range(x1, x2):
+            for j in range(i + 1, y2):
                 # distances is the cache of distance calculations
                 if (clust[i].id, clust[j].id) not in distances:
                     distances[(clust[i].id, clust[j].id)] = distance(
@@ -57,6 +60,78 @@ def hcluster(features, distance=L2dist):
                     closest = d
                     lowestpair = (i, j)
 
+    elif flag == 1:
+        for i in range(x1, x2):
+            for j in range(y2, i + 1):
+                # distances is the cache of distance calculations
+                if (clust[i].id, clust[j].id) not in distances:
+                    distances[(clust[i].id, clust[j].id)] = distance(
+                        clust[i].vec, clust[j].vec)
+
+                d = distances[(clust[i].id, clust[j].id)]
+
+                if d < closest:
+                    closest = d
+                    lowestpair = (i, j)
+
+    elif flag == 2:
+        for i in range(x1, x2):
+            for j in range(y1, i + 1):
+                # distances is the cache of distance calculations
+                if (clust[i].id, clust[j].id) not in distances:
+                    distances[(clust[i].id, clust[j].id)] = distance(
+                        clust[i].vec, clust[j].vec)
+
+                d = distances[(clust[i].id, clust[j].id)]
+
+                if d < closest:
+                    closest = d
+                    lowestpair = (i, j)
+    print distances
+    return lowestpair
+
+
+def hcluster(features, distance=L2dist):
+    # cluster the rows of the "features" matrix
+    currentclustid = -1
+
+    # clusters are initially just the individual rows
+    clust = [cluster_node(array(features[i]), id=i)
+             for i in range(len(features))]
+
+    while len(clust) > 1:
+        lowestpair = (0, 1)
+        closest = distance(clust[0].vec, clust[1].vec)
+        len1 = len(clust)
+        # loop through every pair looking for the smallest distance
+        '''for i in range(len(clust)):
+            for j in range(i + 1, len(clust)):
+            # distances is the cache of distance calculations
+                if (clust[i].id, clust[j].id) not in distances:
+                    distances[(clust[i].id, clust[j].id)] = distance(
+                        clust[i].vec, clust[j].vec)
+
+                d = distances[(clust[i].id, clust[j].id)]
+
+                if d < closest:
+                    closest = d
+                    lowestpair = (i, j)'''
+
+        args = [[clust, 0, 0, len1/2, len1/2, 0, distance],
+                [clust, len1/2, len1/2, len1 - 1, len1 - 1, 0, distance],
+                [clust, len1 - 1, 0, len1/2, len1/2, 1, distance],
+                [clust, len1 - 1, 0, len1/2, len1/2, 2, distance]
+                ]
+        final = parmap.map(findMin, args)
+
+        print distances
+        print final
+
+        minindex = argmin([distances[clust[lowestpair[0]].id, clust[lowestpair[1]].id] for \
+            lowestpair in final])
+
+        lowestpair = final[minindex]
+
         # calculate the average of the two clusters
         mergevec = [(clust[lowestpair[0]].vec[i] + clust[lowestpair[1]].vec[i]) / 2.0
                     for i in range(len(clust[0].vec))]
@@ -67,7 +142,7 @@ def hcluster(features, distance=L2dist):
                                   distance=closest, id=currentclustid)
 
         # cluster ids that weren't in the original set are negative
-        currentclustid - = 1
+        currentclustid -= 1
         del clust[lowestpair[1]]
         del clust[lowestpair[0]]
         clust.append(newcluster)
@@ -85,9 +160,9 @@ def extract_clusters(clust, dist):
         # check the right and left branches
         cl = []
         cr = []
-        if clust.left! = None:
+        if clust.left != None:
             cl = extract_clusters(clust.left, dist=dist)
-        if clust.right! = None:
+        if clust.right != None:
             cr = extract_clusters(clust.right, dist=dist)
         return cl + cr
 
@@ -101,9 +176,9 @@ def get_cluster_elements(clust):
         # check the right and left branches
         cl = []
         cr = []
-        if clust.left! = None:
+        if clust.left !=  None:
             cl = get_cluster_elements(clust.left)
-        if clust.right! = None:
+        if clust.right !=  None:
             cr = get_cluster_elements(clust.right)
         return cl + cr
 
@@ -117,21 +192,21 @@ def printclust(clust, labels=None, n=0):
         print '-'
     else:
         # positive id means that this is an endpoint
-        if labels = = None:
+        if labels == None:
             print clust.id
         else:
             print labels[clust.id]
 
     # now print the right and left branches
-    if clust.left! = None:
+    if clust.left != None:
         printclust(clust.left, labels=labels, n=n + 1)
-    if clust.right! = None:
+    if clust.right != None:
         printclust(clust.right, labels=labels, n=n + 1)
 
 
 def getheight(clust):
     # Is this an endpoint? Then the height is just 1
-    if clust.left = = None and clust.right = = None:
+    if clust.left == None and clust.right == None:
         return 1
 
     # Otherwise the height is the same of the heights of
@@ -141,7 +216,7 @@ def getheight(clust):
 
 def getdepth(clust):
     # The distance of an endpoint is 0.0
-    if clust.left = = None and clust.right = = None:
+    if clust.left   ==  None and clust.right   ==  None:
         return 0
 
     # The distance of a branch is the greater of its two sides
@@ -201,3 +276,11 @@ def drawnode(draw, clust, x, y, scaling, imlist, img):
         ns = nodeim.size
         img.paste(
             nodeim, (x, y - ns[1] // 2, x + ns[0], y + ns[1] - ns[1] // 2))
+
+def go():
+    filename = "data/SwedishLeaf_TRAIN"
+    odata = genfromtxt(filename, delimiter=',')
+    hcluster(odata)
+
+if __name__ == '__main__':
+    go()
