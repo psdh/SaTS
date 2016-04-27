@@ -44,12 +44,6 @@ def calc(series):
     len1 = len(series)
     ser = []
     for i in range(len1):
-<<<<<<< HEAD
-        for j in range(i + 1, len1):
-            ser.append([series[i], series[j]])
-    res = parmap.map(calculateED, ser, processes=50)
-    return np.array(res)
-=======
         for j in range(i+1, len1):
             ser.append([series[i], series[j]])
 
@@ -108,7 +102,6 @@ def main():
     distancesED = calc(features)
 
     CFdistances = calcCF(features)
->>>>>>> f95df29e4cb8eaf42bd3a54ec3c1e16d3336a1ab
 
     CID(500, 501, distancesED, CFdistances)
 
