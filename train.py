@@ -1,5 +1,6 @@
+import multiprocessing
+import numpy as np
 import math
-
 
 # TODO<shivin> parallelize this to use multiple cores
 def calculateC(series):
@@ -17,18 +18,17 @@ def calculateC(series):
 
     return complexityF
 
+def diff(x1, x2, que):
+    que.put((x1-x2)**2)
 
 # TODO<shivin> parallelize this to use multiple cores
 def calculateED(series1, series2):
     """
         Calculates euclidean distance between two series
     """
-
     edistance = 0
-
-    for i in range(series1):
-        edistance = (series1[i] - series2[i]) ** 2
-
+    pool = multiprocessing.Pool()
+    pool.map(diff, [series1, series2])
 
     edistance = math.sqrt(edistance)
 
