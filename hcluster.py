@@ -31,19 +31,16 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
-distances = {}
-
 def findMin(paras):
     # initialize the variables
     clust = paras[0]
-    x1 = paras[1]
-    y1 = paras[2]
-    x2 = paras[3]
-    y2 = paras[4]
-    flag = paras[5]
-    distance = paras[6]
-    global distances
-    #print (x1, x2, y1, y2)
+    distances = paras[1]
+    x1 = paras[2]
+    y1 = paras[3]
+    x2 = paras[4]
+    y2 = paras[5]
+    flag = paras[6]
+    distance = paras[7]
     closest = distance(clust[x1].vec, clust[y1 + 1].vec)
     lowestpair = (x1, y1)
     if flag == 0:
@@ -61,7 +58,7 @@ def findMin(paras):
                     lowestpair = (i, j)
 
     elif flag == 1:
-        for i in range(x1, x2):
+        for i in list(reversed(range(x1, x2))):
             for j in range(y2, i + 1):
                 # distances is the cache of distance calculations
                 if (clust[i].id, clust[j].id) not in distances:
@@ -75,7 +72,7 @@ def findMin(paras):
                     lowestpair = (i, j)
 
     elif flag == 2:
-        for i in range(x1, x2):
+        for i in list(reversed(range(x1, x2))):
             for j in range(y1, i + 1):
                 # distances is the cache of distance calculations
                 if (clust[i].id, clust[j].id) not in distances:
@@ -87,12 +84,12 @@ def findMin(paras):
                 if d < closest:
                     closest = d
                     lowestpair = (i, j)
-    print distances
     return lowestpair
 
 
 def hcluster(features, distance=L2dist):
     # cluster the rows of the "features" matrix
+    distances = {}
     currentclustid = -1
 
     # clusters are initially just the individual rows
@@ -117,16 +114,13 @@ def hcluster(features, distance=L2dist):
                     closest = d
                     lowestpair = (i, j)'''
 
-        args = [[clust, 0, 0, len1/2, len1/2, 0, distance],
-                [clust, len1/2, len1/2, len1 - 1, len1 - 1, 0, distance],
-                [clust, len1 - 1, 0, len1/2, len1/2, 1, distance],
-                [clust, len1 - 1, 0, len1/2, len1/2, 2, distance]
+        args = [[clust, distances, 0, 0, len1/2, len1/2, 0, distance],
+                [clust, distances, len1/2, len1/2, len1 - 1, len1 - 1, 0, distance],
+                [clust, distances, len1 - 1, 0, len1/2, len1/2, 1, distance],
+                [clust, distances, len1 - 1, 0, len1/2, len1/2, 2, distance]
                 ]
         final = parmap.map(findMin, args)
-
-        print distances
         print final
-
         minindex = argmin([distances[clust[lowestpair[0]].id, clust[lowestpair[1]].id] for \
             lowestpair in final])
 
