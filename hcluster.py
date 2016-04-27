@@ -2,6 +2,8 @@ from numpy import *
 from multiprocessing import Pool
 import parmap
 
+from train import CID
+
 """
 Code for hierarchical clustering, modified from
 Programming Collective Intelligence by Toby Segaran
@@ -31,6 +33,7 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
+<<<<<<< HEAD
 def findMin(paras):
     # initialize the variables
     clust = paras[0]
@@ -88,6 +91,9 @@ def findMin(paras):
 
 
 def hcluster(features, distance=L2dist):
+=======
+def hcluster(features, ed, cf, distance=CID):
+>>>>>>> f95df29e4cb8eaf42bd3a54ec3c1e16d3336a1ab
     # cluster the rows of the "features" matrix
     distances = {}
     currentclustid = -1
@@ -98,15 +104,20 @@ def hcluster(features, distance=L2dist):
 
     while len(clust) > 1:
         lowestpair = (0, 1)
+<<<<<<< HEAD
         closest = distance(clust[0].vec, clust[1].vec)
         len1 = len(clust)
+=======
+        closest = distance(clust[0].id, clust[1].id, ed, cf)
+
+>>>>>>> f95df29e4cb8eaf42bd3a54ec3c1e16d3336a1ab
         # loop through every pair looking for the smallest distance
         '''for i in range(len(clust)):
             for j in range(i + 1, len(clust)):
             # distances is the cache of distance calculations
                 if (clust[i].id, clust[j].id) not in distances:
                     distances[(clust[i].id, clust[j].id)] = distance(
-                        clust[i].vec, clust[j].vec)
+                        clust[i].id, clust[j].id, ed, cf)
 
                 d = distances[(clust[i].id, clust[j].id)]
 
@@ -170,9 +181,15 @@ def get_cluster_elements(clust):
         # check the right and left branches
         cl = []
         cr = []
+<<<<<<< HEAD
         if clust.left !=  None:
             cl = get_cluster_elements(clust.left)
         if clust.right !=  None:
+=======
+        if clust.left != None:
+            cl = get_cluster_elements(clust.left)
+        if clust.right != None:
+>>>>>>> f95df29e4cb8eaf42bd3a54ec3c1e16d3336a1ab
             cr = get_cluster_elements(clust.right)
         return cl + cr
 
@@ -210,7 +227,11 @@ def getheight(clust):
 
 def getdepth(clust):
     # The distance of an endpoint is 0.0
+<<<<<<< HEAD
     if clust.left   ==  None and clust.right   ==  None:
+=======
+    if clust.left == None and clust.right == None:
+>>>>>>> f95df29e4cb8eaf42bd3a54ec3c1e16d3336a1ab
         return 0
 
     # The distance of a branch is the greater of its two sides
