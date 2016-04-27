@@ -33,7 +33,6 @@ def L1dist(v1, v2):
 #     return sqrt(sum((v1-v2)**2))
 
 
-<<<<<<< HEAD
 def findMin(paras):
     # initialize the variables
     clust = paras[0]
@@ -102,7 +101,7 @@ def hcluster(features, ed, cf, distance=CID):
     while len(clust) > 1:
         lowestpair = (0, 1)
         closest = distance(clust[0].id, clust[1].id, ed, cf)
-
+        len1 = len(clust)
         # loop through every pair looking for the smallest distance
         '''for i in range(len(clust)):
             for j in range(i + 1, len(clust)):
@@ -274,10 +273,10 @@ def drawnode(draw, clust, x, y, scaling, imlist, img):
         img.paste(
             nodeim, (x, y - ns[1] // 2, x + ns[0], y + ns[1] - ns[1] // 2))
 
-def go():
-    filename = "data/SwedishLeaf_TRAIN"
-    odata = genfromtxt(filename, delimiter=',')
-    hcluster(odata)
+# def go():
+#     filename = "data/SwedishLeaf_TRAIN"
+#     odata = genfromtxt(filename, delimiter=',')
+#     hcluster(odata)
 
-if __name__ == '__main__':
-    go()
+# if __name__ == '__main__':
+#     go()

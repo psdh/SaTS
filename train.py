@@ -1,3 +1,4 @@
+from scipy.fftpack import dct as dct
 import numpy as np
 import parmap
 import math
@@ -33,11 +34,15 @@ def calculateED(s):
     """
     return np.sqrt(np.sum((s[1] - s[0])**2))
 
+def calculateCorr(s):
+    """
+        Calculates the correlation between the fourier transformation of the time series
+    """
+    return np.correlate(dct(s[0], norm='ortho'), dct(s[1], norm='ortho'))
+
 def calcCF(series):
     distances = parmap.map(calculateC, series)
-
     print "len of distances: " + str(len(distances))
-
     return distances
 
 def calc(series):
@@ -105,7 +110,7 @@ def main():
 
     CID(500, 501, distancesED, CFdistances)
 
-    print CFdistances
+    # print CFdistances
 
     print "Now clustering"
 
