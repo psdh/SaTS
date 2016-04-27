@@ -1,13 +1,13 @@
 # plot.py
 # create basic plots on the swedist leaf datasets
-
 # Done as part of Advanced Data Mining Course at BITS Pilani, Pilani Campus (CG G520)
 #  authors:
 #           Prabhjyot Singh Sodhi
 #           Shivin Srivastava
 
 import matplotlib.pyplot as plt
-from  train import calculateC
+from train import calculateC
+
 
 def plot():
 
@@ -30,7 +30,6 @@ def plot():
 
     print data[1:]
     print len_graph
-
 
     plt.plot(data)
     plt.show()

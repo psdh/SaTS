@@ -1,38 +1,44 @@
-import multiprocessing
 import numpy as np
+import parmap
 import math
 
+# series is a matrix of series
 # TODO<shivin> parallelize this to use multiple cores
+
+
 def calculateC(series):
     """
-        This is the primary function responsible for calculating the complexity measure for a given time series
+        This is the primary function responsible for calculating the complexity
+        measure for a given time series
     """
 
     complexityF = 0
 
     # can make this step multi-core to speed up things
     for i, ele in enumerate(series[:-1]):
-        complexityF += (series[i] - series[i+1]) ** 2
+        complexityF += (series[i] - series[i + 1]) ** 2
 
     complexityF = math.sqrt(complexityF)
 
     return complexityF
 
-def diff(x1, x2, que):
-    que.put((x1-x2)**2)
 
 # TODO<shivin> parallelize this to use multiple cores
-def calculateED(series1, series2):
+def calculateED(s):
     """
         Calculates euclidean distance between two series
     """
-    edistance = 0
-    pool = multiprocessing.Pool()
-    pool.map(diff, [series1, series2])
+    return np.sqrt(np.sum((s[1] - s[0])**2))
 
-    edistance = math.sqrt(edistance)
 
-    return edistance
+def calc(series):
+    len1 = len(series)
+    ser = []
+    for i in range(len1):
+        for j in range(i, len1):
+            ser.append([series[i], series[j]])
+
+    parmap.map(calculateED, ser)
 
 
 def CF(Q, C):
