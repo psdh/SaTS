@@ -1,10 +1,12 @@
+from profilehooks import profile
 from numpy import genfromtxt
 import numpy as np
 import random
 import parmap
 
-def distance(x, y):
-    return np.linalg.norm(x-y)
+# cntr is one centroid point
+def l2(odata, cntr):
+    return np.sum((odata - cntr)**2, axis=1)
 
 def calcdist(args):
     x = args[0]
@@ -13,21 +15,44 @@ def calcdist(args):
     print distance(x, mu[idx])
     return [idx, distance(x, mu[idx])]
 
+def findMin(res):
+    out = []
+    # check for all data points
+    for i in range(len(res[0][1])):
+        min1 = np.inf
+        minpos = -1
+        # len(res) = number of centroid points
+        for j in range(len(res)):
+            if res[j][1][i] < min1:
+                min1 = res[j][1][i]
+                # the index
+                minpos = res[j][0]
+        out.append(minpos)
+    return out
+
+
+def caldist(args):
+    X = args[0]
+    idx = args[1]
+    mu = args[2]
+    return [idx, l2(X, mu)]
+
 def cluster_points(X, mu):
     clusters  = {}
-    # calculate distance of x from every centroid, i[0] is first centroid
-    for x in X:
-        arg = [[x, mu, i[0]] for i in enumerate(mu)]
-        # print len(arg)
-        bestmukey = parmap.map(calcdist, arg, processes=4)
-        print "executed parmap"
-        bestmukey = min(bestmukey, key=lambda t:t[1])[0]
-        # bestmukey = np.argmin([np.linalg.norm(x-mu[i[0]]) \
-        #             for i in enumerate(mu)])
+
+    # calculate distance of x from every centroid, mu is all points, m is one center with its index
+    arg = [[X, m[0], m[1]] for m in enumerate(mu)]
+
+    # res has distances of all points from the centroids
+    res = parmap.map(caldist, arg)
+    bestmukey = findMin(res)
+
+
+    for i in range(len(X)):
         try:
-            clusters[bestmukey].append(x)
+            clusters[bestmukey[i]].append(X[i])
         except KeyError:
-            clusters[bestmukey] = [x]
+            clusters[bestmukey[i]] = [X[i]]
     return clusters
 
 def reevaluate_centers(mu, clusters):
@@ -53,6 +78,6 @@ def find_centers(X, K):
     return(mu, clusters)
 
 
-filename = "data/SwedishLeaf_TRAIN"
+filename = "data/StarLightCurves_TEST"
 odata = genfromtxt(filename, delimiter=',')
 find_centers(odata, 5)[1]

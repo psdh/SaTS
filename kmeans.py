@@ -1,4 +1,5 @@
 from numpy import genfromtxt
+from multiprocessing import Pool
 import numpy as np
 import random
 import parmap
@@ -34,12 +35,13 @@ def find_centers(X, K):
         oldmu = mu
         # Assign all points in X to clusters
         arg = [[x, mu] for x in X]
-        clusters = parmap.map(cluster_points, arg)[0]
+        pool = Pool(processes=1)
+        clusters = pool.map(cluster_points, arg, chunksize=1)[0]
         # Reevaluate centers
         mu = reevaluate_centers(oldmu, clusters)
     return(mu, clusters)
 
 
-filename = "data/SwedishLeaf_TRAIN"
+filename = "data/StarLightCurves_TEST"
 odata = genfromtxt(filename, delimiter=',')
 find_centers(odata, 5)[1]
