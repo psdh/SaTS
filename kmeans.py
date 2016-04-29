@@ -1,6 +1,7 @@
 from multiprocessing import Pool
 from numpy import genfromtxt
 import multiprocessing
+import matplotlib.pyplot as plt
 import numpy as np
 from train import CID, fdist
 import random
@@ -9,7 +10,12 @@ import parmap
 import time
 
 clusters = {}
-distance = fdist
+
+def norm(x, y):
+    return np.linalg.norm(x - y)
+
+distance = CID
+
 def cluster_points(args):
     X = args[0]
     mu = args[1]
@@ -31,7 +37,6 @@ def reevaluate_centers(dim):
     newmu = []
 
     from pprint import pprint
-    # pprint(len(clusters[0]) + len(clusters[1]) + len(clusters[2]) + len(clusters[3]) + len(clusters[4]))
 
     keys = sorted(clusters.keys())
 
@@ -63,14 +68,14 @@ def find_centers(X, K):
     oldmu = random.sample(X, K)
     mu = random.sample(X, K)
     it = 0
-    while it < 10:
+    while it < 50:
         it += 1
         for i in range(len(clusters)):
             clusters[i] = []
 
         oldmu = mu
         # Assign all points in X to clusters
-        proc = 8
+        proc = 4
         arg =[]
         s = 0
         add = len(X)/proc
@@ -91,12 +96,13 @@ def find_centers(X, K):
         # Reevaluate centers
         mu = reevaluate_centers(len(X[0]))
         pool.close()
-
+    # print clusters
     return(mu, clusters)
 # def remove_first(*args):
 
-def predict(centres, test):
-    for i in range(len(test)):
+def predict(centres, clusters, X):
+    dist = []
+    for i in range(len(X)):
         d = []
         for j in range(len(centres)):
             d.append(distance(centres[j][1:], X[i][1:]))
@@ -105,30 +111,44 @@ def predict(centres, test):
     out = []
 
     for i in range(len(dist)):
-        out.append([X[i], np.argmin(dist[i])])
+        out.append(np.argmin(dist[i]))
+    # print out
+    plt.plot()
+    # index of point
+    idx = 50
+    print "species of data point is " + str(X[idx][0])
+    # print clusters
+    purity = {}
+
+    for i in range(clust):
+        purity[i] = 0
+    # print purity
+    print "cluster statistics"
+    # print clusters
+    for i in range(len(clusters[out[idx]])):
+        purity[int(clusters[out[idx]][i][0])] += 1
+
+    print purity
+
     return out
 
 
-filename = "./data/StarLightCurves_TRAIN"
+filename = "./data/SwedishLeaf_TRAIN"
 odata = genfromtxt(filename, delimiter=',')
 
 ts = time.clock()
-print ts
-# len_4 = len(odata)/4
 
-# first_loc_del = [odata[:len_4], odata[len_4:2*len_4], odata[2*len_4:3*len_4], odata[3*len_4:]]
+# number of clusters
+clust = 16
+for i in range(clust):
+    clusters[i] = []
 
-# multiprocessing.Pool(processes=4).map(remove_first, first_loc_del)
-# import sys
-# sys.exit(0)
-clusters[0] = []
-clusters[1] = []
-clusters[2] = []
-clusters[3] = []
-clusters[4] = []
+filename = "./data/SwedishLeaf_TRAIN"
+test = genfromtxt(filename, delimiter=',')
 
 
-find_centers(odata, 5)[1]
+(centres, clusters) = find_centers(odata, clust)
+predict(centres, clusters, test)
 
 print "time taken: "
 print time.clock() - ts

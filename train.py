@@ -11,32 +11,22 @@ def calculateC(series):
         This is the primary function responsible for calculating the complexity
         measure for a given time series
     """
-
-    complexityF = 0
-
-    s1 = series[1:len(series) - 1]
-    s2 = series[0:len(series) - 2]
+    s1 = np.array(series[1:len(series) - 1])
+    s2 = np.array(series[0:len(series) - 2])
     return np.linalg.norm(s1 - s2)
-
-    # for i, ele in enumerate(series[:-1]):
-    #     complexityF += (series[i] - series[i + 1]) ** 2
-
-    # complexityF = math.sqrt(complexityF)
-    # # print complexityF
-    return complexityF
-
 
 def calculateED(s0, s1):
     """
         Calculates euclidean distance between two series
     """
-    return np.linalg.norm(s0 - s1)
+    return np.linalg.norm(np.array(s0) - np.array(s1))
 
 def fdist(s1, s2):
     """
         Calculates the correlation between the fourier transformation of the time series
     """
-    return np.correlate(dct(s1, norm='ortho'), dct(s2, norm='ortho'))
+    dist = float(1)/(np.correlate(dct(s1, norm='ortho'), dct(s2, norm='ortho'))[0])
+    return dist
 
 def calcCF(series):
     distances = parmap.map(calculateC, series)
@@ -59,7 +49,8 @@ def calc(series):
 def CF(Q, C):
     CEQ = calculateC(Q)
     CEC = calculateC(C)
-
+    # print CEQ
+    # print CEC
     try:
         return float(max(CEQ, CEC)) / min(CEQ, CEC)
     except:
