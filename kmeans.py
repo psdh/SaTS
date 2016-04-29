@@ -2,7 +2,7 @@ from multiprocessing import Pool
 from numpy import genfromtxt
 import multiprocessing
 import numpy as np
-from train import CID
+from train import CID, calculateCorr
 import random
 import parmap
 
@@ -25,7 +25,7 @@ def cluster_points(args):
     for i in range(len(X)):
         d = []
         for j in range(len(mu)):
-            d.append(CID(mu[j][1:], odata[i][1:]))
+            d.append(calculateCorr(mu[j][1:], odata[i][1:]))
         dist.append(d)
 
     out = []
@@ -70,7 +70,7 @@ def find_centers(X, K):
     oldmu = random.sample(X, K)
     mu = random.sample(X, K)
     it = 0
-    while it < 10:
+    while it < 100:
         it += 1
         for i in range(len(clusters)):
             clusters[i] = []
@@ -78,7 +78,7 @@ def find_centers(X, K):
         oldmu = mu
         # Assign all points in X to clusters
 
-        proc = 3
+        proc = 8
         arg =[]
         s = 0
         add = len(X)/proc
@@ -107,7 +107,7 @@ filename = "./data/StarLightCurves_TRAIN"
 odata = genfromtxt(filename, delimiter=',')
 
 ts = time.clock()
-print ts
+# print ts
 # len_4 = len(odata)/4
 
 # first_loc_del = [odata[:len_4], odata[len_4:2*len_4], odata[2*len_4:3*len_4], odata[3*len_4:]]
@@ -124,5 +124,5 @@ clusters[4] = []
 
 find_centers(odata, 5)[1]
 
-print "time taken: "
-print time.clock() - ts
+# print "time taken: "
+# print time.clock() - ts

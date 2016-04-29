@@ -1,0 +1,36 @@
+1
+
+python kmeans.py  27.49s user 4.40s system 101% cpu 31.314 total
+
+2
+
+python kmeans.py  57.35s user 6.76s system 187% cpu 34.248 total
+
+
+3
+
+python kmeans.py  65.86s user 9.28s system 256% cpu 29.348 total
+
+4
+
+python kmeans.py  67.38s user 10.59s system 306% cpu 25.453 total
+
+
+5
+
+
+python kmeans.py  102.58s user 13.50s system 364% cpu 26.566 total
+
+6
+
+python kmeans.py  89.52s user 14.45s system 408% cpu 25.480 total
+
+
+7
+
+python kmeans.py  99.60s user 17.36s system 447% cpu 26.121 total
+
+8
+
+python kmeans.py  95.98s user 16.58s system 472% cpu 23.838 total
+

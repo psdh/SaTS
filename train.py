@@ -30,11 +30,11 @@ def calculateED(s0, s1):
     """
     return np.linalg.norm(s0 - s1)
 
-def calculateCorr(s):
+def calculateCorr(s0, s1):
     """
         Calculates the correlation between the fourier transformation of the time series
     """
-    return np.correlate(dct(s[0], norm='ortho'), dct(s[1], norm='ortho'))
+    return np.correlate(dct(s0, norm='ortho'), dct(s1, norm='ortho'))
 
 def calcCF(series):
     distances = parmap.map(calculateC, series)
