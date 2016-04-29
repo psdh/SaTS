@@ -1,10 +1,12 @@
+from profilehooks import profile
 from numpy import genfromtxt
 import numpy as np
 import random
 import parmap
 
-def distance(x, y):
-    return np.linalg.norm(x-y)
+# cntr is one centroid point
+def l2(odata, cntr):
+    return np.sum((odata - cntr)**2, axis=1)
 
 def calcdist(args):
     x = args[0]
@@ -12,6 +14,28 @@ def calcdist(args):
     idx = args[2]
     print distance(x, mu[idx])
     return [idx, distance(x, mu[idx])]
+
+def findMin(res):
+    out = []
+    # check for all data points
+    for i in range(len(res[0][1])):
+        min1 = np.inf
+        minpos = -1
+        # len(res) = number of centroid points
+        for j in range(len(res)):
+            if res[j][1][i] < min1:
+                min1 = res[j][1][i]
+                # the index
+                minpos = res[j][0]
+        out.append(minpos)
+    return out
+
+
+def caldist(args):
+    X = args[0]
+    idx = args[1]
+    mu = args[2]
+    return [idx, l2(X, mu)]
 
 def cluster_points(X, mu):
     clusters  = {}
@@ -25,9 +49,9 @@ def cluster_points(X, mu):
         bestmukey = np.argmin([np.linalg.norm(x-mu[i[0]]) \
                     for i in enumerate(mu)])
         try:
-            clusters[bestmukey].append(x)
+            clusters[bestmukey[i]].append(X[i])
         except KeyError:
-            clusters[bestmukey] = [x]
+            clusters[bestmukey[i]] = [X[i]]
     return clusters
 
 def reevaluate_centers(mu, clusters):

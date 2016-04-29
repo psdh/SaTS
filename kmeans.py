@@ -1,4 +1,5 @@
 from numpy import genfromtxt
+from multiprocessing import Pool
 import numpy as np
 import random
 import parmap
@@ -94,6 +95,7 @@ def find_centers(X, K):
             for point in clust:
                 clusters[point[1]].append(point[0])
         print it
+
         # Reevaluate centers
         mu = reevaluate_centers(len(X[0]))
         pool.close()
