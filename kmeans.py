@@ -1,9 +1,10 @@
-from numpy import genfromtxt
 from multiprocessing import Pool
+from numpy import genfromtxt
+import multiprocessing
 import numpy as np
+from train import CID
 import random
 import parmap
-import multiprocessing
 
 import time
 
@@ -24,7 +25,7 @@ def cluster_points(args):
     for i in range(len(X)):
         d = []
         for j in range(len(mu)):
-            d.append(np.linalg.norm(mu[j] - odata[i]))
+            d.append(CID(mu[j][1:], odata[i][1:]))
         dist.append(d)
 
     out = []

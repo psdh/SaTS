@@ -23,11 +23,11 @@ def calculateC(series):
     return complexityF
 
 
-def calculateED(s):
+def calculateED(s0, s1):
     """
         Calculates euclidean distance between two series
     """
-    return np.sqrt(np.sum((s[1] - s[0])**2))
+    return np.linalg.norm(s0 - s1)
 
 def calculateCorr(s):
     """
