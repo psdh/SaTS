@@ -3,8 +3,6 @@ import numpy as np
 import parmap
 import math
 
-global n
-n = 501
 
 def calculateC(series):
     """
@@ -16,7 +14,7 @@ def calculateC(series):
 
     s1 = series[1:len(series) - 1]
     s2 = series[0:len(series) - 2]
-    return np.linalg.norm(s1 - s2)
+    return np.linalg.norm(np.array(s1) - np.array(s2))
 
     # for i, ele in enumerate(series[:-1]):
     #     complexityF += (series[i] - series[i + 1]) ** 2
