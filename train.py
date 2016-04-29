@@ -14,20 +14,23 @@ def calculateC(series):
 
     complexityF = 0
 
-    # can make this step multi-core to speed up things
-    for i, ele in enumerate(series[:-1]):
-        complexityF += (series[i] - series[i + 1]) ** 2
+    s1 = series[1:len(series) - 1]
+    s2 = series[0:len(series) - 2]
+    return np.linalg.norm(s1 - s2)
 
-    complexityF = math.sqrt(complexityF)
+    # for i, ele in enumerate(series[:-1]):
+    #     complexityF += (series[i] - series[i + 1]) ** 2
 
+    # complexityF = math.sqrt(complexityF)
+    # # print complexityF
     return complexityF
 
 
-def calculateED(s):
+def calculateED(s0, s1):
     """
         Calculates euclidean distance between two series
     """
-    return np.sqrt(np.sum((s[1] - s[0])**2))
+    return np.linalg.norm(s0 - s1)
 
 def calculateCorr(s):
     """

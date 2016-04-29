@@ -39,6 +39,7 @@ def caldist(args):
 
 def cluster_points(X, mu):
     clusters  = {}
+
     # calculate distance of x from every centroid, i[0] is first centroid
     for x in X:
         arg = [[x, mu, i[0]] for i in enumerate(mu)]
