@@ -3,8 +3,6 @@ import numpy as np
 import parmap
 import math
 
-global n
-n = 501
 
 def calculateC(series):
     """
@@ -16,7 +14,7 @@ def calculateC(series):
 
     s1 = series[1:len(series) - 1]
     s2 = series[0:len(series) - 2]
-    return np.linalg.norm(s1 - s2)
+    return np.linalg.norm(np.array(s1) - np.array(s2))
 
     # for i, ele in enumerate(series[:-1]):
     #     complexityF += (series[i] - series[i + 1]) ** 2
@@ -32,11 +30,11 @@ def calculateED(s0, s1):
     """
     return np.linalg.norm(s0 - s1)
 
-def calculateCorr(s):
+def calculateCorr(s0, s1):
     """
         Calculates the correlation between the fourier transformation of the time series
     """
-    return np.correlate(dct(s[0], norm='ortho'), dct(s[1], norm='ortho'))
+    return np.correlate(dct(s0, norm='ortho'), dct(s1, norm='ortho'))
 
 def calcCF(series):
     distances = parmap.map(calculateC, series)

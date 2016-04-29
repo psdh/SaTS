@@ -8,8 +8,8 @@ Done as part of Advanced Data Mining Course at BITS Pilani, Pilani Campus(CG G52
 
 from numpy import genfromtxt
 import matplotlib.pyplot as plt
-from train import calc
 
+import matplotlib
 
 def plot():
 
@@ -19,14 +19,14 @@ def plot():
     #line = int(raw_input("line to plot?\n"))
     odata = genfromtxt(filename, delimiter=',')
     line = 1
-    res = calc(odata[:2])
-    print "res = " + str(res.shape)
     # got the nth line!
     data = data.split('\n')[line - 1]
 
     data = data.split(',')
 
     #leaf_no = data[0]
+
+    Species = data[0]
 
     data = [float(x) for x in data[1:]]
 
@@ -36,6 +36,7 @@ def plot():
     print len_graph
 
     plt.plot(data)
+    plt.title("Plot for species: " + str(Species))
     plt.show()
 
     # print "Here is the complexity measure: " + str(calc(data))

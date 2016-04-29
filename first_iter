@@ -1,0 +1,54 @@
+1
+
+time taken:
+2.932868
+python kmeans.py  6.93s user 4.04s system 112% cpu 9.751 total
+
+2
+
+time taken:
+3.207496
+python kmeans.py  7.92s user 5.14s system 171% cpu 7.610 total
+
+
+3
+
+time taken:
+3.435571
+python kmeans.py  8.76s user 6.28s system 208% cpu 7.226 total
+
+
+4
+
+time taken:
+3.529967
+python kmeans.py  13.33s user 7.94s system 252% cpu 8.436 total
+
+5
+
+time taken:
+3.86497
+python kmeans.py  12.05s user 9.05s system 269% cpu 7.825 total
+
+6
+
+time taken:
+4.241706
+python kmeans.py  12.53s user 10.50s system 275% cpu 8.364 total
+
+
+7
+
+time taken:
+4.352783
+python kmeans.py  13.00s user 10.84s system 284% cpu 8.377 total
+
+
+8
+
+time taken:
+5.464606
+python kmeans.py  28.51s user 15.26s system 338% cpu 12.933 total
+
+
+
