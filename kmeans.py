@@ -70,7 +70,7 @@ def find_centers(X, K):
     oldmu = random.sample(X, K)
     mu = random.sample(X, K)
     it = 0
-    while it < 100:
+    while it < 10:
         it += 1
         for i in range(len(clusters)):
             clusters[i] = []
@@ -106,7 +106,7 @@ filename = "./data/StarLightCurves_TRAIN"
 odata = genfromtxt(filename, delimiter=',')
 
 ts = time.clock()
-
+print ts
 # len_4 = len(odata)/4
 
 # first_loc_del = [odata[:len_4], odata[len_4:2*len_4], odata[2*len_4:3*len_4], odata[3*len_4:]]
