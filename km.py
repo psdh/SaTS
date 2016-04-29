@@ -19,11 +19,11 @@ def cluster_points(X, mu):
     for x in X:
         arg = [[x, mu, i[0]] for i in enumerate(mu)]
         # print len(arg)
-        bestmukey = parmap.map(calcdist, arg, processes=4)
-        print "executed parmap"
-        bestmukey = min(bestmukey, key=lambda t:t[1])[0]
-        # bestmukey = np.argmin([np.linalg.norm(x-mu[i[0]]) \
-        #             for i in enumerate(mu)])
+        # bestmukey = parmap.map(calcdist, arg, processes=4)
+        # print "executed parmap"
+        # bestmukey = min(bestmukey, key=lambda t:t[1])[0]
+        bestmukey = np.argmin([np.linalg.norm(x-mu[i[0]]) \
+                    for i in enumerate(mu)])
         try:
             clusters[bestmukey].append(x)
         except KeyError:
@@ -53,6 +53,6 @@ def find_centers(X, K):
     return(mu, clusters)
 
 
-filename = "data/SwedishLeaf_TRAIN"
+filename = "data/StarLightCurves_TEST"
 odata = genfromtxt(filename, delimiter=',')
 find_centers(odata, 5)[1]
