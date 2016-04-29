@@ -68,7 +68,7 @@ def find_centers(X, K):
     oldmu = random.sample(X, K)
     mu = random.sample(X, K)
     it = 0
-    while it < 50:
+    while it < 100:
         it += 1
         for i in range(len(clusters)):
             clusters[i] = []
@@ -76,7 +76,7 @@ def find_centers(X, K):
         oldmu = mu
         # Assign all points in X to clusters
 
-        proc = 3
+        proc = 8
         arg =[]
         s = 0
         add = len(X)/proc
@@ -87,13 +87,9 @@ def find_centers(X, K):
 
         arg.append([X[s:], mu])
 
-        tn = time.clock()
-
         pool = multiprocessing.Pool(processes=proc)
         keys_put = pool.map(cluster_points, arg)
 
-        print "intermediate time: "
-        print time.clock() - tn
         for clust in keys_put:
             for point in clust:
                 clusters[point[1]].append(point[0])
@@ -122,6 +118,7 @@ clusters[1] = []
 clusters[2] = []
 clusters[3] = []
 clusters[4] = []
+
 
 find_centers(odata, 5)[1]
 
