@@ -2,30 +2,23 @@ from multiprocessing import Pool
 from numpy import genfromtxt
 import multiprocessing
 import numpy as np
-from train import CID
+from train import CID, fdist
 import random
 import parmap
 
 import time
 
 clusters = {}
-
+distance = fdist
 def cluster_points(args):
     X = args[0]
     mu = args[1]
-
-    # print  "len of x:" + str(len(x))
-
-    # print "len of  mu: " + str(len(mu))
-    # bestmukey = min([(i[0], np.linalg.norm(x-mu[i[0]])) \
-    #             for i in enumerate(mu)], key=lambda t:t[1])[0]
-    # print bestmukey
 
     dist = []
     for i in range(len(X)):
         d = []
         for j in range(len(mu)):
-            d.append(CID(mu[j][1:], odata[i][1:]))
+            d.append(distance(mu[j][1:], odata[i][1:]))
         dist.append(d)
 
     out = []
@@ -77,7 +70,7 @@ def find_centers(X, K):
 
         oldmu = mu
         # Assign all points in X to clusters
-        proc = 3
+        proc = 8
         arg =[]
         s = 0
         add = len(X)/proc
@@ -101,6 +94,20 @@ def find_centers(X, K):
 
     return(mu, clusters)
 # def remove_first(*args):
+
+def predict(centres, test):
+    for i in range(len(test)):
+        d = []
+        for j in range(len(centres)):
+            d.append(distance(centres[j][1:], X[i][1:]))
+        dist.append(d)
+
+    out = []
+
+    for i in range(len(dist)):
+        out.append([X[i], np.argmin(dist[i])])
+    return out
+
 
 filename = "./data/StarLightCurves_TRAIN"
 odata = genfromtxt(filename, delimiter=',')
