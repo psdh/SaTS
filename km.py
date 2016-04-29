@@ -39,16 +39,17 @@ def caldist(args):
 
 def cluster_points(X, mu):
     clusters  = {}
-
-    # calculate distance of x from every centroid, mu is all points, m is one center with its index
-    arg = [[X, m[0], m[1]] for m in enumerate(mu)]
-
-    # res has distances of all points from the centroids
-    res = parmap.map(caldist, arg)
-    bestmukey = findMin(res)
-
-
     for i in range(len(X)):
+    # calculate distance of x from every centroid, i[0] is first centroid
+    # calculate distance of x from every centroid, i[0] is first centroid
+    for x in X:
+        arg = [[x, mu, i[0]] for i in enumerate(mu)]
+        # print len(arg)
+        # bestmukey = parmap.map(calcdist, arg, processes=4)
+        # print "executed parmap"
+        # bestmukey = min(bestmukey, key=lambda t:t[1])[0]
+        bestmukey = np.argmin([np.linalg.norm(x-mu[i[0]]) \
+                    for i in enumerate(mu)])
         try:
             clusters[bestmukey[i]].append(X[i])
         except KeyError:
