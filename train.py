@@ -3,10 +3,6 @@ import numpy as np
 import parmap
 import math
 
-
-# series is a matrix of series
-# TODO<shivin> parallelize this to use multiple cores
-
 global n
 n = 501
 
@@ -27,7 +23,6 @@ def calculateC(series):
     return complexityF
 
 
-# TODO<shivin> parallelize this to use multiple cores
 def calculateED(s):
     """
         Calculates euclidean distance between two series
@@ -58,9 +53,9 @@ def calc(series):
 
     return distances
 
-def CF(Q, C, cf):
-    CEQ = cf[Q-1]
-    CEC = cf[C-1]
+def CF(Q, C):
+    CEQ = calculateC(Q)
+    CEC = calculateC(C)
 
     try:
         return float(max(CEQ, CEC)) / min(CEQ, CEC)
@@ -72,20 +67,8 @@ def sum_ser(n):
     return (1.0 * n * (n+1))/2.0
 
 
-def CID(Q, C, ed, cf):
-    Q = abs(Q)
-    C = abs(C)
-    mi = min(Q, C)
-    ma = max(Q, C)
-
-
-    print
-    print mi
-    print ma
-    ed_Q_C = ed[int(sum_ser(n-1) - sum_ser(n-1-mi) - 1 + (ma - mi - 1))]
-
-    print ed_Q_C
-    return ed_Q_C * CF(Q, C, cf)
+def CID(Q, C):
+    return calculateED(Q, C) * CF(Q, C)
 
 
 def main():
