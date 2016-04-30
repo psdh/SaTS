@@ -14,7 +14,7 @@ clusters = {}
 def norm(x, y):
     return np.linalg.norm(x - y)
 
-distance = norm
+distance = fdist
 
 def cluster_points(args):
     X = args[0]
@@ -68,7 +68,7 @@ def find_centers(X, K):
     oldmu = random.sample(X, K)
     mu = random.sample(X, K)
     it = 0
-    while it < 50:
+    while not has_converged(mu, oldmu):
         it += 1
         for i in range(len(clusters)):
             clusters[i] = []
@@ -113,11 +113,7 @@ def predict(centres, clusters, X):
     for i in range(len(dist)):
         out.append(np.argmin(dist[i]))
     # print out
-    plt.plot()
     # index of point
-    idx = 0
-    print "species of data point is " + str(X[idx][0])
-    # print clusters
     purity = {}
 
     for i in range(clust):
@@ -125,33 +121,43 @@ def predict(centres, clusters, X):
     # print purity
     print "purity of predicted cluster"
     # print clusters
-    for cnum in range(clust):
-        for i in range(len(clusters[cnum])):
-            purity[int(clusters[cnum][i][0]) - 1] += 1
-        print purity
+    # for cnum in range(clust):
+    #     for i in range(len(clusters[cnum])):
+    #         purity[int(clusters[cnum][i][0]) - 1] += 1
+    #     print purity
         # purity = {}
 
-        for i in range(clust):
-            purity[i] = 0
-
-    # for i in range(10):
-    #     print clusters[out[idx]][i][0]
-    # print purity
-
+    while(1):
+        plt.close()
+        idx = int(raw_input("line to classify?\n"))
+        plt.plot(X[idx], label = "test curve")
+        print "species of data point is " + str(X[idx][0])
+        print "predicted cluster is " + str(out[idx])
+        rlist = random.sample(range(len(clusters[out[idx]])), 5)
+        print "species of nearby is "
+        for r in rlist:
+            print clusters[out[idx]][r][0]
+            plt.plot(clusters[out[idx]][r][1:], label = "curve" + str(r))
+        # print clusters
+        plt.legend()
+        # for i in range(10):
+        #     print clusters[out[idx]][i][0]
+        # print purity
+        plt.show()
     return out
 
 
-filename = "./data/StarLightCurves_TRAIN"
+filename = "./data/SwedishLeaf_TEST"
 odata = genfromtxt(filename, delimiter=',')
 
 ts = time.clock()
 
 # number of clusters
-clust = 3
+clust = 5
 for i in range(clust):
     clusters[i] = []
 
-filename = "./data/StarLightCurves_TEST"
+filename = "./data/SwedishLeaf_TRAIN"
 test = genfromtxt(filename, delimiter=',')
 
 
