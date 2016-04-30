@@ -14,7 +14,7 @@ clusters = {}
 def norm(x, y):
     return np.linalg.norm(x - y)
 
-distance = CID
+distance = norm
 
 def cluster_points(args):
     X = args[0]
@@ -115,7 +115,7 @@ def predict(centres, clusters, X):
     # print out
     plt.plot()
     # index of point
-    idx = 50
+    idx = 0
     print "species of data point is " + str(X[idx][0])
     # print clusters
     purity = {}
@@ -123,27 +123,35 @@ def predict(centres, clusters, X):
     for i in range(clust):
         purity[i] = 0
     # print purity
-    print "cluster statistics"
+    print "purity of predicted cluster"
     # print clusters
-    for i in range(len(clusters[out[idx]])):
-        purity[int(clusters[out[idx]][i][0])] += 1
+    for cnum in range(clust):
+        for i in range(len(clusters[cnum])):
+            purity[int(clusters[cnum][i][0]) - 1] += 1
+        print purity
+        # purity = {}
 
-    print purity
+        for i in range(clust):
+            purity[i] = 0
+
+    # for i in range(10):
+    #     print clusters[out[idx]][i][0]
+    # print purity
 
     return out
 
 
-filename = "./data/SwedishLeaf_TRAIN"
+filename = "./data/StarLightCurves_TRAIN"
 odata = genfromtxt(filename, delimiter=',')
 
 ts = time.clock()
 
 # number of clusters
-clust = 16
+clust = 3
 for i in range(clust):
     clusters[i] = []
 
-filename = "./data/SwedishLeaf_TRAIN"
+filename = "./data/StarLightCurves_TEST"
 test = genfromtxt(filename, delimiter=',')
 
 
